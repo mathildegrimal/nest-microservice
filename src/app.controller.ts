@@ -8,7 +8,16 @@ import {
   DeleteUserCommand,
   UpdateUserCommand,
 } from './commands';
-import { ListUsersQuery, RetrieveUserDTO, RetrieveUserQuery } from './queries';
+import {
+  ListUsersQuery,
+  RetrieveUserDTO,
+  RetrieveUserQuery,
+  ListUsersEventsQuery,
+} from './queries';
+import * as clc from 'cli-color';
+
+const msg = clc.xterm(202).bgXterm(236);
+
 @Controller()
 export class AppController {
   private logger = new Logger('AppController');
@@ -21,21 +30,27 @@ export class AppController {
 
   @MessagePattern('createUser')
   async createUser(user: CreateUserDTO): Promise<string> {
-    this.logger.log('Creating User');
+    console.log(msg('Creating User'));
     const { firstname, lastname } = user;
     return this.commandBus.execute(new CreateUserCommand(firstname, lastname));
   }
 
   @MessagePattern('getUsers')
   async getUsers(): Promise<string> {
-    this.logger.log('getting all users');
+    console.log(msg('Getting all users'));
     return this.queryBus.execute(new ListUsersQuery());
+  }
+
+  @MessagePattern('getUsersEvents')
+  async getUsersEvent(): Promise<string> {
+    console.log(msg('Getting all users events'));
+    return this.queryBus.execute(new ListUsersEventsQuery());
   }
 
   @MessagePattern('retrieveUser')
   async retrieveUser(retrieveUserDTO: RetrieveUserDTO) {
     const lastname = retrieveUserDTO.lastname;
-    this.logger.log('Retrieving one user ' + lastname);
+    console.log(msg('Retrieving one user ' + lastname));
     return this.queryBus.execute(
       new RetrieveUserQuery(retrieveUserDTO.lastname),
     );
@@ -43,10 +58,7 @@ export class AppController {
 
   @MessagePattern('updateUser')
   async updateUser(param: any) {
-    console.log('log du controller', param);
-
-    this.logger.log('Updating user with id ' + param.id);
-
+    console.log(msg('Updating user with id ' + param.id));
     return this.commandBus.execute(
       new UpdateUserCommand(param.id, param.firstname, param.lastname),
     );
@@ -54,8 +66,7 @@ export class AppController {
 
   @MessagePattern('deleteUser')
   async deleteUser(param: any) {
-    this.logger.log('Deleting user with id ' + param.id);
-    //return 'user deleted';
+    console.log(msg('Deleting user with id ' + param.id));
     return this.commandBus.execute(new DeleteUserCommand(param.id));
   }
 }

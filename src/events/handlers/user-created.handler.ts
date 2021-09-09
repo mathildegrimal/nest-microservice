@@ -6,6 +6,6 @@ import { UserCreated } from '../user-created.event';
 @EventsHandler(UserCreated)
 export class UserCreatedHandler implements IEventHandler<UserCreated> {
   handle(event: UserCreated) {
-    console.log(clc.greenBright('User created event...'));
+    console.log(clc.bgXterm(30)('User created event...'));
   }
 }

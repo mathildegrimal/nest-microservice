@@ -17,11 +17,8 @@ import {
 } from './config';
 import { User } from './entity/user.entity';
 
-import { User as User2 } from 'domain/entities';
-
 import { UserCreatedSagas } from './sagas/user-created.saga';
 import { Subscriber } from './subscriber';
-import { EventStoreDBClient } from '@eventstore/db-client';
 import { Publisher } from './publisher';
 
 @Module({

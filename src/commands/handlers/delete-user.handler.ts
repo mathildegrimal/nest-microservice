@@ -15,7 +15,7 @@ export class DeleteUserHandler implements ICommandHandler<DeleteUserCommand> {
     let result: string;
 
     try {
-      console.log(command);
+      //console.log(command);
       result = await this.service.deleteUser(command);
     } catch (e) {
       throw new RpcException(e);

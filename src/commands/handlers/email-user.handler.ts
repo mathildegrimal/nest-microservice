@@ -11,7 +11,7 @@ export class EmailUserHandler implements ICommandHandler<EmailUserCommand> {
     console.log(
       `User ${command.firstname} ${
         command.lastname
-      } was emailed ${new Date().toLocaleDateString()}`,
+      } was emailed on ${new Date().toLocaleDateString()}`,
     );
   }
 }

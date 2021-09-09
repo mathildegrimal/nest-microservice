@@ -25,23 +25,34 @@ export class AppService {
     userCreated.firstname = user.firstname;
     userCreated.lastname = user.lastname;
     await this.userRepository.save(userCreated);
-
     await this.publisher.publish(new Events.UserCreated(userCreated));
     return `Utilisateur créé avec le nom ${user.lastname} et le prenom ${user.firstname}`;
   }
 
   public async updateUser(user: UpdateUserDTO): Promise<string> {
+    const userUpdated = new User();
+    userUpdated.firstname = user.firstname;
+    userUpdated.lastname = user.lastname;
+
     await this.userRepository.update(user.id, {
-      firstname: user.firstname,
-      lastname: user.lastname,
+      firstname: userUpdated.firstname,
+      lastname: userUpdated.lastname,
     });
-    //await this.publisher.publish(new Events.UserCreated(userCreated));
+
+    await this.publisher.publish(new Events.UserUpdated(userUpdated));
     return `Utilisateur avec l'id ${user.id} a été modifié`;
   }
 
   public async deleteUser(user: DeleteUserDTO): Promise<string> {
-    await this.userRepository.delete(user);
-    //await this.publisher.publish(new Events.UserCreated(userCreated));
-    return `Utilisateur avec l'id ${user.id} a été supprimé`;
+    const userToDelete = await this.userRepository.findOne(user);
+
+    if (userToDelete) {
+      await this.userRepository.delete(user);
+      await this.publisher.publish(new Events.UserDeleted(user.id, true));
+      return `Utilisateur avec l'id ${user.id} a été supprimé`;
+    } else {
+      await this.publisher.publish(new Events.UserDeleted(user.id, false));
+      return `Pas d'utilisateur avec l'id ${user.id}`;
+    }
   }
 }
