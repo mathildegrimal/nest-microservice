@@ -23,7 +23,6 @@ export class ListUsersHandler implements IQueryHandler<ListUsersQuery> {
   async execute(): Promise<User[]> {
     const userRepository = this.connection.getRepository(User);
     const users = await userRepository.find();
-    console.log(users);
 
     // getting events from eventStore
     const usersEvents: Array<object> = [];
@@ -37,7 +36,6 @@ export class ListUsersHandler implements IQueryHandler<ListUsersQuery> {
     //console.log(events);
 
     for await (const { event } of events) {
-      console.log(event);
       const datas: any = event.data;
 
       switch (event?.type) {

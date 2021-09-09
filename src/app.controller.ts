@@ -2,7 +2,12 @@ import { Controller, Logger, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateUserCommand, CreateUserDTO } from './commands';
+import {
+  CreateUserCommand,
+  CreateUserDTO,
+  DeleteUserCommand,
+  UpdateUserCommand,
+} from './commands';
 import { ListUsersQuery, RetrieveUserDTO, RetrieveUserQuery } from './queries';
 @Controller()
 export class AppController {
@@ -13,18 +18,6 @@ export class AppController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
-
-  @MessagePattern('add')
-  async accumulate(data: number[]) {
-    this.logger.log('Adding ' + data.toString());
-    return this.appService.accumulate(data);
-  }
-
-  @MessagePattern('hello')
-  async accumulate2(name: string): Promise<string> {
-    this.logger.log('Saying Hello to ' + name.toString());
-    return this.appService.sayHello(name);
-  }
 
   @MessagePattern('createUser')
   async createUser(user: CreateUserDTO): Promise<string> {
@@ -46,5 +39,23 @@ export class AppController {
     return this.queryBus.execute(
       new RetrieveUserQuery(retrieveUserDTO.lastname),
     );
+  }
+
+  @MessagePattern('updateUser')
+  async updateUser(param: any) {
+    console.log('log du controller', param);
+
+    this.logger.log('Updating user with id ' + param.id);
+
+    return this.commandBus.execute(
+      new UpdateUserCommand(param.id, param.firstname, param.lastname),
+    );
+  }
+
+  @MessagePattern('deleteUser')
+  async deleteUser(param: any) {
+    this.logger.log('Deleting user with id ' + param.id);
+    //return 'user deleted';
+    return this.commandBus.execute(new DeleteUserCommand(param.id));
   }
 }
