@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
 import { Connection } from 'typeorm';
-import { User } from 'src/entity/user.entity';
+import { User } from '../../entity/user.entity';
 import { RetrieveUserQuery } from '../retrieve-user.query';
 
 import { RpcException } from '@nestjs/microservices';
@@ -17,7 +17,7 @@ export class RetrieveUserHandler implements IQueryHandler<RetrieveUserQuery> {
       let result: Record<string, string | any> | null = null;
       const userRepository = this.connection.getRepository(User);
       const user = await userRepository.findOne({
-        where: { lastname: query.lastname },
+        where: { email: query.email },
       });
 
       if (user) {

@@ -30,9 +30,12 @@ export class AppController {
 
   @MessagePattern('createUser')
   async createUser(user: CreateUserDTO): Promise<string> {
-    console.log(msg('Creating User'));
-    const { firstname, lastname } = user;
-    return this.commandBus.execute(new CreateUserCommand(firstname, lastname));
+    const { firstname, lastname, email } = user;
+    console.log(msg(`Creating User ${firstname} ${lastname}`));
+
+    return this.commandBus.execute(
+      new CreateUserCommand(firstname, lastname, email),
+    );
   }
 
   @MessagePattern('getUsers')
@@ -49,18 +52,21 @@ export class AppController {
 
   @MessagePattern('retrieveUser')
   async retrieveUser(retrieveUserDTO: RetrieveUserDTO) {
-    const lastname = retrieveUserDTO.lastname;
-    console.log(msg('Retrieving one user ' + lastname));
-    return this.queryBus.execute(
-      new RetrieveUserQuery(retrieveUserDTO.lastname),
-    );
+    const email = retrieveUserDTO.email;
+    console.log(msg('Retrieving one user ' + email));
+    return this.queryBus.execute(new RetrieveUserQuery(retrieveUserDTO.email));
   }
 
   @MessagePattern('updateUser')
   async updateUser(param: any) {
     console.log(msg('Updating user with id ' + param.id));
     return this.commandBus.execute(
-      new UpdateUserCommand(param.id, param.firstname, param.lastname),
+      new UpdateUserCommand(
+        param.id,
+        param.firstname,
+        param.lastname,
+        param.email,
+      ),
     );
   }
 

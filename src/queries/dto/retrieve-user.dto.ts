@@ -1,3 +1,3 @@
 export class RetrieveUserDTO {
-  readonly lastname: string;
+  readonly email: string;
 }

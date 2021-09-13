@@ -1,3 +1,3 @@
 export class RetrieveUserQuery {
-  public constructor(readonly lastname: string) {}
+  public constructor(readonly email: string) {}
 }

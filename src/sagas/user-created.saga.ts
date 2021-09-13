@@ -4,7 +4,7 @@ import { UserCreated } from '../events';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ICommand, ofType, Saga } from '@nestjs/cqrs';
-import { EmailUserCommand } from 'src/commands/email-user.command';
+import { EmailUserCommand } from '../commands/email-user.command';
 @Injectable()
 export class UserCreatedSagas {
   @Saga()
@@ -13,7 +13,11 @@ export class UserCreatedSagas {
       ofType(UserCreated),
       map(
         (event) =>
-          new EmailUserCommand(event.user.firstname, event.user.lastname),
+          new EmailUserCommand(
+            event.user.firstname,
+            event.user.lastname,
+            event.user.email,
+          ),
       ),
     );
   };
